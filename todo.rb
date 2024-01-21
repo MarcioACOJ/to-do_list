@@ -1,5 +1,3 @@
-require 'date'
-
 class Todo
     def initialize 
         @tasks = []

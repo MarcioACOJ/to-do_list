@@ -49,7 +49,7 @@ class Todo
         @categories = Hash.new(0)
         puts "todas as tarefas foram removidas."
     end
-    
+
     def show_statistics
         total_tasks = @tasks.length
         completed_tasks = @tasks.count { |task| task[:completed] }
@@ -91,7 +91,8 @@ class Todo
             puts "5. Editar Tarefa"
             puts "6. Visualizar Estatisticas"
             puts "7. Limpar todas as Tarefas"
-            puts "8. Sair"
+            puts "8. Apagar Tarefa"
+            puts "9. Sair"
 
             choice = gets.chomp.to_i
 
@@ -111,6 +112,8 @@ class Todo
             when 7
                 clear_all_tasks
             when 8
+                delete_single_task_from_cli
+            when 9
                 break
             else
                 puts "Opção Invalida. Tente novamente."
@@ -188,6 +191,19 @@ class Todo
         end
     end
 
+    def delete_single_task_from_cli
+        list_tasks
+        print "Indice de Tarefa a ser apagada: "
+        task_index = gets.chomp.to_i - 1
+
+        if task_index >= 0 && task_index < @tasks.length
+            deleted_task = @tasks.delete_at(task_index)
+            update_categories(deleted_task[:categories], remove: true)
+            puts "Tarefa #{task_index + 1} apagada: #{deleted_task[:description]}"
+        else
+            puts "indice invaldo. Tarefa não encontrada."
+        end
+    end
     def show_priority_distribution #exibe a distrubição de prioridade
         puts "\nDistribuição de Prioridades:"
         priorities = @tasks.map {|task| task [:priority]}.uniq

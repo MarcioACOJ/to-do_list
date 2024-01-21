@@ -5,8 +5,8 @@ class Todo
         load_tasks
     end
 
-    def add_task(task, due_date = nil) # adiciona uma tarefa
-        @tasks << { description: task, completed: false, due_date: due_date }
+    def add_task(task, due_date = nil, priority = "baixa") # adiciona uma tarefa
+        @tasks << { description: task, completed: false, due_date: due_date, priority: priority }
         puts "Tarefa Adicionada: #{task}"
     end
 
@@ -15,7 +15,8 @@ class Todo
         @tasks.each_with_index do |task, index|
             status = task[:completed] ? "[X]" : "[ ]"
             due_date_info = task[:due_date] ? "(Conclusão até #{task[:due_date]})" : ""
-            puts "#{index + 1}. #{status} #{task[:description]}#{due_date_info}"
+            priority_info = task[:priority] ? "Prioridade: #{task[:priority]}" : ""
+            puts "#{index + 1}. #{status} #{task[:description]}#{due_date_info}#{priority_info}"
         end
     end
 
@@ -47,8 +48,8 @@ end
 
 # instancia a classe e testa algumas funcionalidades
 todo_list = Todo.new
-todo_list.add_task("Estudar Ruby", Date.new(2024, 1, 21))
-todo_list.add_task("Fazer Exercicios de Ruby", Date.new(2024, 2, 15))
+todo_list.add_task("Estudar Ruby", Date.new(2024, 1, 21), "média")
+todo_list.add_task("Fazer Exercicios de Ruby", Date.new(2024, 2, 15), "alta")
 todo_list.list_tasks
 
 # Marca a primeira tarefa como concluida

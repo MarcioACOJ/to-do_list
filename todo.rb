@@ -82,7 +82,9 @@ class Todo
             puts "2. Listar Tarefas"
             puts "3. Marcar Tarefa como Concluida"
             puts "4. Remover Tarefa"
-            puts "5. Sair"
+            puts "5. Editar Tarefa"
+            puts "6. Visualizar Estatisticas"
+            puts "7. Sair"
 
             choice = gets.chomp.to_i
 
@@ -96,8 +98,10 @@ class Todo
             when 4
                 remove_task_from_cli
             when 5
-                show_statistics
+                edit_task_from_cli
             when 6
+                show_statistics
+            when 7
                 break
             else
                 puts "Opção Invalida. Tente novamente."
@@ -139,6 +143,40 @@ class Todo
         print "Indice da Tarefa a ser removida: "
         task_index = gets.chomp.to_i - 1
         remove_task(task_index)
+    end
+
+    def edit_task_from_cli
+        puts "\nEditar Tarefa:"
+        list_tasks
+        print "Indice da Tarefa a ser editada: "
+        task_index = gets.chomp.to_i - 1
+            
+        if task_index >= 0 && task_index < @tasks.length
+            task_to_edit = @tasks[task_index]
+            puts "Tarefa Atual: #{task_to_edit[:description]}"
+
+            print "Nova Descrição (pressione Enter para manter a mesma): "
+            new_description = gets.chomp
+            task_to_edit[:description] = new_description unless new_description.empty?
+
+            print "Nova Data de Conclusão (formato YYYY-MM-DD, pressione Enter para manter a mesma): "
+            new_due_date_str = gets.chomp
+            new_due_date = Date.parse(new_due_date_str) rescue nil
+            task_to_edit[:due_date] = new_due_date_str unless new_due_date.nil?
+
+            print "Nova Prioridade (baixa/média/alta, pressione Enter para manter a mesma): "
+            new_priority = gets.chomp.downcase
+            task_to_edit[:priority] = new_priority unless new_priority.empy?
+
+            print "Novas Categorias (separadas por virgulas, pressione Enter para manter a mesma): "
+            new_categories_str = gets.chomp
+            new_categories = new_categories_str.splt(",").map(&:strip)
+            task_to_edit[:categories] = new_categories unless new_categories.empty?
+
+            puts "Tarefa Editada com Sucesso!"
+        else 
+            puts "Indice invalido. Tarefa não encontrada."
+        end
     end
 
     def show_priority_distribution #exibe a distrubição de prioridade

@@ -4,6 +4,7 @@ class Todo
         @tasks = []
         @categories = Hash.new(0)
         load_tasks
+        start_cli
     end
 
     def add_task(task, due_date = nil, priority = "baixa", categories = []) # adiciona uma tarefa
@@ -60,19 +61,71 @@ class Todo
         end
     end
 
+    def start_cli
+        loop do 
+            puts "\nEscolha uma opção:"
+            puts "1. Adicionar Tarefa"
+            puts "2. Listar Tarefas"
+            puts "3. Marcar Tarefa como Concluida"
+            puts "4. Remover Tarefa"
+            puts "5. Sair"
+
+            choice = gets.chomp.to_i
+
+            case choice
+            when 1
+                add_task_from_cli
+            when 2
+                list_tasks
+            when 3
+                complete_task_from_cli 
+            when 4
+                remove_task_from_cli
+            when 5
+                break
+            else
+                puts "Opção Invalida. Tente novamente."
+            end
+        end
+    end
+
+    def add_task_from_cli
+        puts "\nAdicionar Tarefa:"
+        print "descrição da Tarefa: "
+        description = gets.chomp
+
+        print "Data de Conclusão (opcional, formato YYYY-MM-DD): "
+        due_date_str = gets.chomp
+        due_date = Date.parse(due_date_str) rescue nil
+
+        print "Prioridade (baixa/média/alta, padrão: baixa): "
+        priority = gets.chomp.downcase
+        priority = "baixa" unless %w[baixa média alta].include?(priority)
+
+        print "Categorias (separadsa por vírgulas): "
+        categories_str = gets.chomp
+        categories = categories_str.split(",").map(&:strip)
+
+        add_task(description, due_date, priority, categories)
+    end
+
+    def complete_task_from_cli
+        puts "\nMarcar Tarefa como Concluida:"
+        list_tasks
+        print "Indice da Tarefa a ser marcada como Concluida: "
+        task_index = gets.chomp.to_i - 1
+        complete_task(task_index)
+    end
+
+    def remove_task_from_cli
+        puts "\nRemover Tarefa:"
+        list_tasks
+        print "Indice da Tarefa a ser removida: "
+        task_index = gets.chomp.to_i - 1
+        remove_task(task_index)
+    end
 end     
 
 
-# instancia a classe e testa algumas funcionalidades
-todo_list = Todo.new
-todo_list.add_task("Estudar Ruby", Date.new(2024, 1, 21), "média", ["estudo"])
-todo_list.add_task("Fazer Exercicios de Ruby", Date.new(2024, 2, 15), "alta", ["exercicio", "programação"])
-todo_list.list_tasks
-
-# Marca a primeira tarefa como concluida
-todo_list.complete_task(0)
-todo_list.list_tasks
-
-# Remove a segunda tarefa
-todo_list.remove_task(1)
-todo_list.list_tasks
+# inicia a classe Todo
+Todo.new

@@ -44,6 +44,12 @@ class Todo
         end
     end
 
+    def clear_all_tasks
+        @tasks = []
+        @categories = Hash.new(0)
+        puts "todas as tarefas foram removidas."
+    end
+    
     def show_statistics
         total_tasks = @tasks.length
         completed_tasks = @tasks.count { |task| task[:completed] }
@@ -84,7 +90,8 @@ class Todo
             puts "4. Remover Tarefa"
             puts "5. Editar Tarefa"
             puts "6. Visualizar Estatisticas"
-            puts "7. Sair"
+            puts "7. Limpar todas as Tarefas"
+            puts "8. Sair"
 
             choice = gets.chomp.to_i
 
@@ -102,6 +109,8 @@ class Todo
             when 6
                 show_statistics
             when 7
+                clear_all_tasks
+            when 8
                 break
             else
                 puts "Opção Invalida. Tente novamente."

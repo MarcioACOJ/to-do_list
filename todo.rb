@@ -1,11 +1,12 @@
+require 'date'
 class Todo
     def initialize 
         @tasks = []
         load_tasks
     end
 
-    def add_task(task) # adiciona uma tarefa
-        @tasks << { description: task, completed: false }
+    def add_task(task, due_date = nil) # adiciona uma tarefa
+        @tasks << { description: task, completed: false, due_date: due_date }
         puts "Tarefa Adicionada: #{task}"
     end
 
@@ -13,7 +14,8 @@ class Todo
         puts "Lista de Tarefas"
         @tasks.each_with_index do |task, index|
             status = task[:completed] ? "[X]" : "[ ]"
-            puts "#{index + 1}. #{status} #{task[:description]}"
+            due_date_info = task[:due_date] ? "(Conclusão até #{task[:due_date]})" : ""
+            puts "#{index + 1}. #{status} #{task[:description]}#{due_date_info}"
         end
     end
 
@@ -35,13 +37,18 @@ class Todo
         end
     end
 
+    private
+
+    def load_tasks #implementação de leitura das tarefas 
+    end
+
 end     
 
 
 # instancia a classe e testa algumas funcionalidades
 todo_list = Todo.new
-todo_list.add_task("Estudar Ruby")
-todo_list.add_task("Fazer Exercicios de Ruby")
+todo_list.add_task("Estudar Ruby", Date.new(2024, 1, 21))
+todo_list.add_task("Fazer Exercicios de Ruby", Date.new(2024, 2, 15))
 todo_list.list_tasks
 
 # Marca a primeira tarefa como concluida

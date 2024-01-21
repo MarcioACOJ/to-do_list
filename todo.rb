@@ -44,12 +44,26 @@ class Todo
         end
     end
 
+    def show_statistics
+        total_tasks = @tasks.length
+        completed_tasks = @tasks.count { |task| task[:completed] }
+        incomplete_tasks = total_tasks - complete_tasks
+
+        puts "\nEstatisticas:"
+        puts "Total de Tarefas: #{total_tasks}"
+        puts "Tarefas Concluídas: #{completed_tasks}"
+        puts "Tarefas Incompletas: #{incomplete_tasks}"
+
+        show_priority_distribution
+        show_category_distribution
+    end
+
     private
 
     def load_tasks #implementação de leitura das tarefas 
     end
 
-    def update_categories(categories, remove: false)
+    def update_categories(categories, remove: false) #atualiza a contagem de categorias
         categories.each do |category|
             if remove 
                 @categories[category] -= 1
@@ -61,7 +75,7 @@ class Todo
         end
     end
 
-    def start_cli
+    def start_cli #inicia a interface interativa
         loop do 
             puts "\nEscolha uma opção:"
             puts "1. Adicionar Tarefa"
@@ -82,6 +96,8 @@ class Todo
             when 4
                 remove_task_from_cli
             when 5
+                show_statistics
+            when 6
                 break
             else
                 puts "Opção Invalida. Tente novamente."
@@ -89,7 +105,7 @@ class Todo
         end
     end
 
-    def add_task_from_cli
+    def add_task_from_cli #adiciona uma tarefa atraves da interface
         puts "\nAdicionar Tarefa:"
         print "descrição da Tarefa: "
         description = gets.chomp
@@ -102,14 +118,14 @@ class Todo
         priority = gets.chomp.downcase
         priority = "baixa" unless %w[baixa média alta].include?(priority)
 
-        print "Categorias (separadsa por vírgulas): "
+        print "Categorias (separadas por vírgulas): "
         categories_str = gets.chomp
         categories = categories_str.split(",").map(&:strip)
 
         add_task(description, due_date, priority, categories)
     end
 
-    def complete_task_from_cli
+    def complete_task_from_cli #marca uma tarefa como concluida
         puts "\nMarcar Tarefa como Concluida:"
         list_tasks
         print "Indice da Tarefa a ser marcada como Concluida: "
@@ -117,12 +133,28 @@ class Todo
         complete_task(task_index)
     end
 
-    def remove_task_from_cli
+    def remove_task_from_cli #remove uma tarefa
         puts "\nRemover Tarefa:"
         list_tasks
         print "Indice da Tarefa a ser removida: "
         task_index = gets.chomp.to_i - 1
         remove_task(task_index)
+    end
+
+    def show_priority_distribution #exibe a distrubição de prioridade
+        puts "\nDistribuição de Prioridades:"
+        priorities = @tasks.map {|task| task [:priority]}.uniq
+        priorities.each do |priority|
+            count = @tasks.count {|task| task [:priority] == priority}
+            puts "#{priority.captalize}: #{count}"
+        end
+    end
+
+    def show_category_distribution #exibe a distribuição de categorias
+        puts "\nDistribuição de Categorias:"
+        @categories.each do |category, count|
+            puts "#{category.capitalize} #{count}"
+        end
     end
 end     
 
